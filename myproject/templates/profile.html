@@ -1,0 +1,78 @@
+<!-- profile.html -->
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Profile Information</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('profile') }}">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" value="{{ user['username'] }}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ user['name'] }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ user['email'] }}">
+                    </div>
+                    <hr>
+                    <h4>Change Password</h4>
+                    <div class="mb-3">
+                        <label for="current_password" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="current_password" name="current_password">
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="new_password" name="new_password">
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3>Account Information</h3>
+            </div>
+            <div class="card-body">
+                <p><strong>Member Since:</strong> {{ user['created_at'].to_native().strftime('%Y-%m-%d') if user['created_at'] else 'Unknown date' }}</p>
+                <p><strong>Total Drawings:</strong> {{ canvas_history|length }}</p>
+            </div>
+        </div>
+
+        {% if canvas_history %}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h3>Drawing History</h3>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for canvas in canvas_history %}
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Drawing #{{ loop.index }}</h5>
+                                    <small>{{ canvas['created_at'].to_native().strftime('%Y-%m-%d %H:%M') if canvas['created_at'] else 'Unknown date' }}</small>
+                                </div>
+                                <img src="{{ canvas['image_data'] }}" class="img-fluid mt-2" alt="Drawing">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
